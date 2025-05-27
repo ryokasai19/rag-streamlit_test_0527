@@ -13,6 +13,7 @@ from langchain.chains.retrieval_qa.base import RetrievalQA
 from dotenv import load_dotenv # this gets my OPEN ai API code
 load_dotenv() 
 print("✅ App started")
+print("✅ KEY LOADED:", os.getenv("OPENAI_API_KEY"))
 
 st.set_page_config(page_title="Ask Your Markdown", page_icon="📘")
 st.title("📘 Ask Your Markdown")
