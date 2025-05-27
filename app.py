@@ -1,12 +1,13 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
+import json
+from langchain_core.documents import Document
 
-from langchain_community.document_loaders import TextLoader
-from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains.retrieval_qa.base import RetrievalQA
+
 
 # Load API key from .env or Streamlit Cloud secrets
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
@@ -22,36 +23,27 @@ st.set_page_config(page_title="Ask Your Markdown", page_icon="📘")
 st.title("📘 Ask Your Markdown")
 st.write("Upload a Markdown file and ask questions about its contents using GPT.")
 
-# File uploader
-uploaded_file = st.file_uploader("📄 Upload a Markdown (.md) file", type="md")
 
-if uploaded_file:
-    # Save uploaded file temporarily
-    with open("temp.md", "wb") as f:
-        f.write(uploaded_file.read())
+with open("sample_chunks.json", "r", encoding="utf-8") as f:
+chunk_texts = json.load(f)
+chunks = [Document(page_content=text) for text in chunk_texts]
 
-    # Load and chunk document
-    loader = TextLoader("temp.md")
-    docs = loader.load()
-    splitter = RecursiveCharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-    chunks = splitter.split_documents(docs)
+# Embed and store in vector DB
+embeddings = OpenAIEmbeddings(openai_api_key=api_key)
+vectorstore = FAISS.from_documents(chunks, embeddings)
 
-    # Embed and store in vector DB
-    embeddings = OpenAIEmbeddings(openai_api_key=api_key)
-    vectorstore = FAISS.from_documents(chunks, embeddings)
+# Setup retrieval chain
+retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
+qa = RetrievalQA.from_chain_type(
+    llm=ChatOpenAI(openai_api_key=api_key),
+    retriever=retriever
+)
 
-    # Setup retrieval chain
-    retriever = vectorstore.as_retriever(search_kwargs={"k": 3})
-    qa = RetrievalQA.from_chain_type(
-        llm=ChatOpenAI(openai_api_key=api_key),
-        retriever=retriever
-    )
+# Ask a question
+query = st.text_input("🔍 Ask a question about the document:")
 
-    # Ask a question
-    query = st.text_input("🔍 Ask a question about the document:")
-
-    if query:
-        result = qa.invoke(query)
-        st.subheader("📎 Answer")
-        answer = result["result"]  # ✅ Extract just the string
-        st.write(answer)
+if query:
+    result = qa.invoke(query)
+    st.subheader("📎 Answer")
+    answer = result["result"] 
+    st.write(answer)
