@@ -20,12 +20,12 @@ if not api_key:
     st.stop()
 
 st.set_page_config(page_title="Ask Your Markdown", page_icon="📘")
-st.title("📘 Ask Your Markdown")
-st.write("Upload a Markdown file and ask questions about its contents using GPT.")
+st.title("📘 Ask anything about Wanderlust!")
+
 
 
 with open("sample_chunks.json", "r", encoding="utf-8") as f:
-chunk_texts = json.load(f)
+    chunk_texts = json.load(f)
 chunks = [Document(page_content=text) for text in chunk_texts]
 
 # Embed and store in vector DB
