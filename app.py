@@ -9,8 +9,9 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 from langchain.chains.retrieval_qa.base import RetrievalQA
 
 # Load API key from .env or Streamlit Cloud secrets
-load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), ".env"))
+api_key = os.getenv("OPEN_API_KEY")
+print("✅ DEBUG: Loaded API key:", api_key)
 
 # Safety check
 if not api_key:
