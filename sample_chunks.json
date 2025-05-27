@@ -1,0 +1,3 @@
+[
+  "# Team Handbook\n\n## Collaboration\n\nWe use Slack for communication and Notion for documentation. Team members are encouraged to share updates daily.\n\n## Security\n\nAll user data is encrypted using AES-256. Access to production requires 2FA.\n\n## Deployment\n\nWe use GitHub Actions to deploy to AWS. Deployments are triggered on merge to `main`."
+]
