@@ -50,6 +50,7 @@ if uploaded_file:
     query = st.text_input("🔍 Ask a question about the document:")
 
     if query:
-        answer = qa.invoke(query)
+        result = qa.invoke(query)
         st.subheader("📎 Answer")
+        answer = result["result"]  # ✅ Extract just the string
         st.write(answer)
