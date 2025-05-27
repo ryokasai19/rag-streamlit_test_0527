@@ -1,13 +1,4 @@
-# Team Handbook
+# RAG Markdown QA App
 
-## Collaboration
-
-We use Slack for communication and Notion for documentation. Team members are encouraged to share updates daily.
-
-## Security
-
-All user data is encrypted using AES-256. Access to production requires 2FA.
-
-## Deployment
-
-We use GitHub Actions to deploy to AWS. Deployments are triggered on merge to `main`.
+This Streamlit app uses LangChain and GPT to let you upload a Markdown file and ask questions about it.
+Made by Ryo, my first attempt haha yessirrrr!
